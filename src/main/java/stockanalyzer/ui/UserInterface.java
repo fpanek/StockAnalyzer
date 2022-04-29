@@ -12,6 +12,13 @@ public class UserInterface
 
 	private Controller ctrl = new Controller();
 
+
+	//why 4 different methods?
+	//Aktien:
+//FQT.F
+//EVN.VI
+//AMS.SW
+
 	public void getDataFromCtrl1(){
 		ctrl.process("ABC");
 	}
