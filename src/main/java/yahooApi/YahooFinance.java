@@ -2,6 +2,7 @@ package yahooApi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import stockanalyzer.ui.YahooAPIException;
 import yahooApi.beans.Asset;
 import yahooApi.beans.YahooResponse;
 
@@ -10,6 +11,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +19,10 @@ import java.util.Map;
 public class YahooFinance {
 
     public static final String URL_YAHOO = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=%s";
+    //orig: public static final String URL_YAHOO = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=%s";
+    // wrong: public static final String URL_YAHOO = "https://query12.finance.yahoo.com/v7/finance/quote?symbols=%s";
 
-    public String requestData(List<String> tickers) {
+    public String requestData(List<String> tickers) throws YahooAPIException {
         //TODO improve Error Handling
         String symbols = String.join(",", tickers);
         String query = String.format(URL_YAHOO, symbols);
@@ -39,8 +43,11 @@ public class YahooFinance {
                 response.append(inputLine);
             }
             in.close();
+        }catch (UnknownHostException e){
+            throw new YahooAPIException("Unknown Host: " + URL_YAHOO);
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            throw new YahooAPIException("Error Connecting to: " + URL_YAHOO);
         }
         return response.toString();
     }
@@ -53,6 +60,7 @@ public class YahooFinance {
         return jo;
     }
 
+    /*
     public void fetchAssetName(Asset asset) {
         YahooFinance yahoo = new YahooFinance();
         List<String> symbols = new ArrayList<>();
@@ -62,6 +70,8 @@ public class YahooFinance {
         JsonObject jo = yahoo.convert(jsonResponse);
         asset.setName(extractName(jo));
     }
+
+     */
 
     private String extractName(JsonObject jo) {
         String returnName = "";
@@ -73,7 +83,7 @@ public class YahooFinance {
         return returnName;
     }
 
-    public YahooResponse getCurrentData(List<String> tickers) {
+    public YahooResponse getCurrentData(List<String> tickers) throws YahooAPIException {
         String jsonResponse = requestData(tickers);
         ObjectMapper objectMapper = new ObjectMapper();
         YahooResponse result = null;
@@ -81,6 +91,7 @@ public class YahooFinance {
              result  = objectMapper.readValue(jsonResponse, YahooResponse.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            throw new YahooAPIException("problem with json");
         }
         return result;
     }

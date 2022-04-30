@@ -4,6 +4,7 @@ package stockanalyzer.ui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 import stockanalyzer.ctrl.Controller;
 
@@ -14,38 +15,58 @@ public class UserInterface
 
 
 	//why 4 different methods?
-	//Aktien:
-//FQT.F
-//EVN.VI
-//AMS.SW
-
 	public void getDataFromCtrl1(){
-		ctrl.process("ABC");
+		try {
+			ctrl.process("FQT.F");
+		}catch (YahooAPIException e){
+			System.out.println(e.getMessage());
+		}
 	}
 
 	public void getDataFromCtrl2(){
+		try {
+			ctrl.process("EVN.VI");
+		}catch (YahooAPIException e){
+			System.out.println(e.getMessage());
+		}
 	}
 
 	public void getDataFromCtrl3(){
-
+		try {
+			ctrl.process("AMS.SW");
+		}catch (YahooAPIException e){
+			System.out.println(e.getMessage());
+		}
 	}
 	public void getDataFromCtrl4(){
-
+		try {
+			ctrl.process("AMS.SW,EVN.VI,FQT.F,KTCG.VI");
+		}catch (YahooAPIException e){
+			System.out.println(e.getMessage());
+		}
 	}
+
 	
 	public void getDataForCustomInput() {
-		
+		System.out.println("Please type in one or more shares for data retrieval: ");
+		Scanner scanner = new Scanner(System.in);
+		String ticker = scanner.next();
+		try {
+			ctrl.process(ticker);
+		}catch (YahooAPIException e){
+			System.out.println(e.getMessage());
+		}
 	}
 
 
 	public void start() {
 		Menu<Runnable> menu = new Menu<>("User Interfacx");
 		menu.setTitel("Wählen Sie aus:");
-		menu.insert("a", "Choice 1", this::getDataFromCtrl1);
-		menu.insert("b", "Choice 2", this::getDataFromCtrl2);
-		menu.insert("c", "Choice 3", this::getDataFromCtrl3);
+		menu.insert("a", "Choice 1 --> FRQ", this::getDataFromCtrl1);
+		menu.insert("b", "Choice 2 --> EVN ", this::getDataFromCtrl2);
+		menu.insert("c", "Choice 3 --> AMS", this::getDataFromCtrl3);
 		menu.insert("d", "Choice User Imput:",this::getDataForCustomInput);
-		menu.insert("z", "Choice User Imput:",this::getDataFromCtrl4);
+		menu.insert("z", "Choice User Imput: more than one company - minmax/average/amountofData",this::getDataFromCtrl4);
 		menu.insert("q", "Quit", null);
 		Runnable choice;
 		while ((choice = menu.exec()) != null) {
