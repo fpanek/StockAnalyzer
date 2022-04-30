@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import stockanalyzer.ctrl.Controller;
 
+
 public class UserInterface 
 {
 

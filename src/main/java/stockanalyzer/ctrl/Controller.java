@@ -1,16 +1,17 @@
 package stockanalyzer.ctrl;
 
+
 import stockanalyzer.jsonDownloader.Json2File;
+
 import stockanalyzer.ui.YahooAPIException;
 import yahooApi.YahooFinance;
 import yahooApi.beans.QuoteResponse;
 import yahooApi.beans.Result;
 import yahooApi.beans.YahooResponse;
 
+import javax.json.Json;
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 
 public class Controller {
@@ -38,21 +39,21 @@ public class Controller {
 		YahooFinance yahooFinance = new YahooFinance();
 		List<String> tickers = Arrays.asList(searchString);
 		YahooResponse response = yahooFinance.getCurrentData(tickers);
+		String json = yahooFinance.requestData(tickers);
+		//System.out.println(json);
+		Json2File.saveJson2File(json);
 		return response;
 	}
-
 
 
 	public double GetDataMax(QuoteResponse quotes)  {
 		double maxValue;
 		maxValue = quotes.getResult().stream().map(Result::getRegularMarketPrice).max(Double::compare).get();
-		//adfasdff----------------
-		Json2File
 		return maxValue;
 	}
 
 	public double GetAverageMaretprice(QuoteResponse quotes){
-		double averageMarketPrice = 100;
+		double averageMarketPrice;
 		//averageMarketPrice = quotes.getResult().stream().collect(Collectors.groupingBy(Result::getRegularMarketPrice, Result::getQu));
 		//averageMarketPrice =
 		//ystem.out.println("Average Markte Price: " + quotes.getResult().stream().mapToDouble(Result::getRegularMarketPrice).average());
