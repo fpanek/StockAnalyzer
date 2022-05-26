@@ -1,5 +1,7 @@
 package stockanalyzer.downloader;
 
+import stockanalyzer.ui.YahooAPIException;
+
 import java.util.List;
 
 public class SequentialDownloader extends Downloader {

@@ -1,5 +1,6 @@
 package stockanalyzer.downloader;
 
+import stockanalyzer.ui.YahooAPIException;
 import yahooApi.YahooFinance;
 
 import java.io.*;
@@ -15,7 +16,7 @@ public abstract class Downloader {
 
     public abstract int process(List<String> urls);
 
-    public String saveJson2File(String ticker) {
+    public String saveJson2File(String ticker)  {
         String fileName = "";
         BufferedWriter writer= null;
         try {
@@ -23,11 +24,10 @@ public abstract class Downloader {
             String json = yahooFinance.requestData(new ArrayList<>(Collections.singleton(ticker)));
 
             fileName = DIRECTORY_DOWNLOAD +ticker + JSON_EXTENSION;
-
             writer = new BufferedWriter(new FileWriter(fileName));
             writer.write(json);
             writer.close();
-        } catch (IOException e) {
+        } catch (IOException | YahooAPIException e) {
             e.printStackTrace();
         } finally {
             try {
